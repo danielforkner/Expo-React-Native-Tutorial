@@ -1,5 +1,6 @@
 import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import app from './src/firebase';
 
 export default function App() {
   return (
@@ -14,7 +15,7 @@ export default function App() {
       </Text>
 
       <TouchableOpacity
-        onPress={() => alert('Hello, world!')}
+        onPress={() => alert(app)}
         style={{ backgroundColor: 'blue' }}
       >
         <Text style={{ fontSize: 20, color: '#fff' }}>Pick a photo</Text>
