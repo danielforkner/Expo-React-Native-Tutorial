@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { View, TextInput, Text, Button } from 'react-native';
-import { registerWithEmailAndPassword } from '../firebase';
+import {
+  registerWithEmailAndPassword,
+  logInWithEmailAndPassword,
+} from '../firebase';
 
 const Register = () => {
   const [email, setEmail] = useState('');
@@ -13,6 +16,12 @@ const Register = () => {
     setIsError(false);
   }, []);
 
+  // React States
+  const resetStates = () => {
+    setEmail('');
+    setPassword('');
+    setUserName('');
+  };
   const updatePassword = (text) => {
     setPassword(text);
   };
@@ -22,6 +31,8 @@ const Register = () => {
   const updateUserName = (text) => {
     setUserName(text);
   };
+
+  // Firebase Auth
   const submitRegister = async () => {
     setIsError(false);
     try {
@@ -30,9 +41,18 @@ const Register = () => {
       setIsError(true);
       setErrMessage(error);
     } finally {
-      setEmail('');
-      setPassword('');
-      setUserName('');
+      resetStates();
+    }
+  };
+  const submitLogin = async () => {
+    setIsError(false);
+    try {
+      await logInWithEmailAndPassword(email, password);
+    } catch (error) {
+      setIsError(true);
+      setErrMessage(error);
+    } finally {
+      resetStates();
     }
   };
 
@@ -51,6 +71,7 @@ const Register = () => {
         onChangeText={updatePassword}
       />
       <Button title={'Register'} onPress={submitRegister} />
+      <Button title={'Login'} onPress={submitLogin} />
       {isError ? <Text>{errMessage.message}</Text> : null}
     </View>
   );
