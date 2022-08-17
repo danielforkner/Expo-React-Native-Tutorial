@@ -69,10 +69,23 @@ const logout = () => {
   signOut(auth);
 };
 
+const getUserByUid = async (uid) => {
+  let user;
+  const usersRef = collection(db, 'users');
+  const q = query(usersRef, where('uid', '==', uid));
+  const querySnapshot = await getDocs(q);
+  querySnapshot.forEach((doc) => {
+    user = doc.data();
+  });
+  console.log(user);
+  return user;
+};
+
 export {
   app,
   auth,
   db,
+  getUserByUid,
   registerWithEmailAndPassword,
   logInWithEmailAndPassword,
   logout,

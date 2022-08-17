@@ -3,7 +3,8 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../firebase';
 
 const initialState = {
-  isLoggedIn: onAuthStateChanged(auth, (user) => (user ? true : false)),
+  isLoggedIn: false,
+  currentUser: { uid: null, name: null, email: null },
 };
 
 export const authSlice = createSlice({
@@ -13,8 +14,11 @@ export const authSlice = createSlice({
     setIsLoggedIn(state, action) {
       state.isLoggedIn = action.payload;
     },
+    setUser(state, action) {
+      state.currentUser = action.payload;
+    },
   },
 });
 
-export const { setIsLoggedIn } = authSlice.actions;
+export const { setIsLoggedIn, setUser } = authSlice.actions;
 export default authSlice.reducer;
