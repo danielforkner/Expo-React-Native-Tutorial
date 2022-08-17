@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { View, TextInput, Text, Button } from 'react-native';
+import { useDispatch } from 'react-redux';
 import {
   registerWithEmailAndPassword,
   logInWithEmailAndPassword,
 } from '../../firebase';
+import { setIsLoggedIn } from './authSlice';
 
 const Register = () => {
+  const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [userName, setUserName] = useState('');
@@ -47,7 +50,10 @@ const Register = () => {
   const submitLogin = async () => {
     setIsError(false);
     try {
-      logInWithEmailAndPassword(email, password);
+      const user = await logInWithEmailAndPassword(email, password);
+      if (user) {
+        dispatch(setIsLoggedIn(true));
+      }
     } catch (error) {
       setIsError(true);
       setErrMessage(error);

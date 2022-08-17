@@ -8,18 +8,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { setIsLoggedIn } from './auth/authSlice';
 
 export default function Main() {
-  const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
-
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        dispatch(setIsLoggedIn(true));
-      } else {
-        dispatch(setIsLoggedIn(false));
-      }
-    });
-  }, []);
 
   return (
     <View style={styles.container}>

@@ -1,7 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../../firebase';
 
 const initialState = {
-  isLoggedIn: false,
+  isLoggedIn: onAuthStateChanged(auth, (user) => (user ? true : false)),
 };
 
 export const authSlice = createSlice({

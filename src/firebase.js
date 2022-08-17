@@ -39,6 +39,7 @@ const logInWithEmailAndPassword = async (email, password) => {
       password
     );
     const user = userCredential.user;
+    return user;
   } catch (err) {
     alert(err.message);
   }
