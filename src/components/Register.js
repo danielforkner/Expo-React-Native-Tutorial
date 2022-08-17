@@ -36,7 +36,7 @@ const Register = () => {
   const submitRegister = async () => {
     setIsError(false);
     try {
-      await registerWithEmailAndPassword(userName, email, password);
+      registerWithEmailAndPassword(userName, email, password);
     } catch (error) {
       setIsError(true);
       setErrMessage(error);
@@ -47,7 +47,7 @@ const Register = () => {
   const submitLogin = async () => {
     setIsError(false);
     try {
-      await logInWithEmailAndPassword(email, password);
+      logInWithEmailAndPassword(email, password);
     } catch (error) {
       setIsError(true);
       setErrMessage(error);
