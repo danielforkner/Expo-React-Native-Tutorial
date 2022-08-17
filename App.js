@@ -1,25 +1,17 @@
 import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import app from './src/firebase';
+import Register from './src/components/Register';
+import {
+  auth,
+  registerWithEmailAndPassword,
+  logInWithEmailAndPassword,
+} from './src/firebase';
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Image
-        source={{ uri: 'https://i.imgur.com/TkIrScD.png' }}
-        style={styles.logo}
-      />
-      <Text style={styles.instructions}>
-        To share a photo from your phone with a friend, just press the button
-        below!
-      </Text>
-
-      <TouchableOpacity
-        onPress={() => alert(app)}
-        style={{ backgroundColor: 'blue' }}
-      >
-        <Text style={{ fontSize: 20, color: '#fff' }}>Pick a photo</Text>
-      </TouchableOpacity>
+      <Text style={styles.instructions}>Login or Register</Text>
+      <Register />
     </View>
   );
 }

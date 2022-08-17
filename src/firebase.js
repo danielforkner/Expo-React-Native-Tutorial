@@ -1,8 +1,23 @@
 import { initializeApp } from 'firebase/app';
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
+  signOut,
+} from 'firebase/auth';
+import {
+  getFirestore,
+  query,
+  getDocs,
+  collection,
+  where,
+  addDoc,
+} from 'firebase/firestore';
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: process.env.REACT_APP_FIREBASE_APIKEY,
+  apiKey: 'AIzaSyAUnQulDJkFMcRKRGKTatppEeh023hBrV4',
   authDomain: 'fir-tutorial-ce628.firebaseapp.com',
   projectId: 'fir-tutorial-ce628',
   storageBucket: 'fir-tutorial-ce628.appspot.com',
@@ -13,5 +28,45 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore();
 
-export default app;
+const logInWithEmailAndPassword = async (email, password) => {
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+  } catch (err) {
+    alert(err.message);
+  }
+};
+
+const registerWithEmailAndPassword = async (name, email, password) => {
+  try {
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    const user = userCredential.user;
+    await addDoc(collection(db, 'users'), {
+      uid: user.uid,
+      name,
+      authProvider: 'local',
+      email,
+    });
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
+
+const logout = () => {
+  signOut(auth);
+};
+
+export {
+  app,
+  auth,
+  registerWithEmailAndPassword,
+  logInWithEmailAndPassword,
+  logout,
+};
