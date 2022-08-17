@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, View } from 'react-native';
-import { logout } from '../firebase';
+import { logout } from '../../firebase';
 
 const Logout = () => {
   return (

@@ -3,7 +3,7 @@ import { View, TextInput, Text, Button } from 'react-native';
 import {
   registerWithEmailAndPassword,
   logInWithEmailAndPassword,
-} from '../firebase';
+} from '../../firebase';
 
 const Register = () => {
   const [email, setEmail] = useState('');
