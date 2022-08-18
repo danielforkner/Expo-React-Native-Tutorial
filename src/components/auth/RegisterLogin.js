@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, TextInput, Text, Button } from 'react-native';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   registerWithEmailAndPassword,
   logInWithEmailAndPassword,
+  getUserByUid,
 } from '../../firebase';
-import { setIsLoggedIn } from './authSlice';
+import { setIsLoggedIn, setStatus } from './authSlice';
 
 const RegisterLogin = () => {
   const [isRegistering, setIsRegistering] = useState(true);
@@ -15,6 +16,7 @@ const RegisterLogin = () => {
   const [userName, setUserName] = useState('');
   const [isError, setIsError] = useState(false);
   const [errMessage, setErrMessage] = useState('');
+  const authStatus = useSelector((state) => state.auth.status);
 
   useEffect(() => {
     setIsError(false);
@@ -46,12 +48,14 @@ const RegisterLogin = () => {
     }
   };
   const submitRegister = async () => {
+    dispatch(setStatus('loading'));
     try {
-      registerWithEmailAndPassword(userName, email, password);
+      await registerWithEmailAndPassword(userName, email, password);
     } catch (error) {
       setIsError(true);
       setErrMessage(error);
     } finally {
+      dispatch(setStatus('idle'));
       resetStates();
     }
   };
@@ -72,6 +76,7 @@ const RegisterLogin = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.instructions}>Login or Register</Text>
+      {authStatus === 'loading' ? <Text>Loadin...</Text> : null}
       <View style={styles.buttonContainer}>
         <Button
           style={styles.button}

@@ -80,14 +80,15 @@ const registerWithEmailAndPassword = async (name, email, password) => {
     const forceSync = await updateDoc(userUpdateRef, {
       docid: docid,
     });
+    return docid;
   } catch (err) {
     console.error(err);
     throw err;
   }
 };
 
-const logout = () => {
-  signOut(auth);
+const logout = async () => {
+  await signOut();
 };
 
 const getUserByUid = async (uid) => {
@@ -142,7 +143,7 @@ export const addEventByAuthor = async (eventData, docid) => {
 
 export const deleteEventByAuthor = async (eventid) => {
   try {
-    await deleteDoc(doc(db, 'events', eventid)); 
+    await deleteDoc(doc(db, 'events', eventid));
   } catch (error) {
     console.error(error);
     throw err;

@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, View, Text } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../firebase';
-import { setIsLoggedIn } from './authSlice';
+import { resetState, setIsLoggedIn } from './authSlice';
 
 const Logout = () => {
   const dispatch = useDispatch();
@@ -14,7 +14,7 @@ const Logout = () => {
         title={'Logout Please'}
         onPress={() => {
           logout();
-          dispatch(setIsLoggedIn(false));
+          dispatch(resetState());
         }}
       />
       <Text>{`Hello, ${user?.name}`}</Text>

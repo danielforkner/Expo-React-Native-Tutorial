@@ -5,7 +5,7 @@ import RegisterLogin from './auth/RegisterLogin';
 import Logout from './auth/Logout';
 import { auth, getUserByUid } from '../firebase';
 import { onAuthStateChanged } from 'firebase/auth';
-import { setIsLoggedIn, setUser } from './auth/authSlice';
+import { setIsLoggedIn, setStatus, setUser } from './auth/authSlice';
 import MyProfile from './profile/MyProfile';
 
 export default function Main() {
@@ -13,10 +13,12 @@ export default function Main() {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const currentUser = useSelector((state) => state.auth.currentUser);
+  const authStatus = useSelector((state) => state.auth.status);
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
+        console.log(user);
         setUserId(user.uid);
         dispatch(setIsLoggedIn(true));
       }
@@ -31,17 +33,17 @@ export default function Main() {
       dispatch(setUser({ uid, name, email, docid }));
     };
 
-    if (userId) {
+    if (userId && authStatus === 'idle') {
       getUser();
     }
-  }, [isLoggedIn]);
+  }, [authStatus, isLoggedIn]);
 
   return (
     <View style={styles.container}>
-      {isLoggedIn ? (
+      {isLoggedIn && authStatus === 'idle' ? (
         <View>
           <Logout />
-          <MyProfile user={currentUser} />
+          {currentUser.email ? <MyProfile user={currentUser} /> : null}
         </View>
       ) : (
         <RegisterLogin />
