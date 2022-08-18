@@ -15,7 +15,11 @@ import {
   where,
   addDoc,
   updateDoc,
+  getDoc,
 } from 'firebase/firestore';
+
+// TODO
+// * refactor query logic into simple function
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -43,10 +47,11 @@ const logInWithEmailAndPassword = async (email, password) => {
     const user = userCredential.user;
     return user;
   } catch (err) {
-    alert(err.message);
+    throw err;
   }
 };
 
+// ----------------USERS
 const registerWithEmailAndPassword = async (name, email, password) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(
@@ -67,7 +72,7 @@ const registerWithEmailAndPassword = async (name, email, password) => {
     const q = query(usersRef, where('uid', '==', user.uid));
     const querySnapshot = await getDocs(q);
     console.log(querySnapshot);
-    querySnapshot.forEach((doc, i) => {
+    querySnapshot.forEach((doc) => {
       docid = doc.id;
     });
     const userUpdateRef = doc(db, 'users', docid);
@@ -94,6 +99,44 @@ const getUserByUid = async (uid) => {
     user = doc.data();
   });
   return user;
+};
+
+// ----------------EVENTS
+export const getEventsByUserDocId = async (docid) => {
+  const events = [];
+  const eventsRef = collection(db, 'events');
+  const q = query(eventsRef, where('author', '==', docid));
+  const querySnapshot = await getDocs(q);
+  querySnapshot.forEach((doc) => {
+    events.push(doc.data());
+  });
+  return events;
+};
+
+export const addEventByAuthor = async (eventData, docid) => {
+  try {
+    const { title, description } = eventData;
+    await addDoc(collection(db, 'events'), {
+      title,
+      description,
+      author: docid,
+    });
+
+    let eventid;
+    const eventsRef = collection(db, 'events');
+    const q = query(eventsRef, where('author', '==', docid));
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      eventid = doc.id;
+    });
+    const eventsUpdateRef = doc(db, 'events', eventid);
+    await updateDoc(eventsUpdateRef, {
+      eventid: eventid,
+    });
+  } catch (error) {
+    console.error(err);
+    throw err;
+  }
 };
 
 export {

@@ -21,9 +21,12 @@ export default function Main() {
         dispatch(setIsLoggedIn(true));
       }
     });
+  }, []);
 
+  useEffect(() => {
     const getUser = async () => {
       let user = await getUserByUid(userId);
+      console.log(user);
       const { name, email, uid, docid } = user;
       dispatch(setUser({ uid, name, email, docid }));
     };
@@ -31,7 +34,7 @@ export default function Main() {
     if (userId) {
       getUser();
     }
-  }, [userId]);
+  }, [isLoggedIn]);
 
   return (
     <View style={styles.container}>

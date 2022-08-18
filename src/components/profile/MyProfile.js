@@ -1,6 +1,7 @@
 import React from 'react';
 import { FlatList, Button, View, Text } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
+import MyEvents from '../events/MyEvents';
 
 const MyProfile = ({ user: { name, docid, email, uid } }) => {
   const dispatch = useDispatch();
@@ -27,6 +28,9 @@ const MyProfile = ({ user: { name, docid, email, uid } }) => {
             </View>
           )}
         />
+      </Text>
+      <Text>
+        <MyEvents docid={docid} />
       </Text>
     </View>
   );
