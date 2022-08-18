@@ -18,13 +18,14 @@ const AddEvents = ({ docid }) => {
 
   const handleSubmit = async () => {
     try {
-      await addEventByAuthor(
+      const forceSync = await addEventByAuthor(
         { title: eventName, description: eventDescription },
         docid
       );
       const myEvents = await getEventsByUserDocId(docid);
       dispatch(setMyEvents(myEvents));
     } catch (error) {
+      console.error(error)
     } finally {
       setEventDescription('');
       setEventName('');
