@@ -9,10 +9,12 @@ import {
 import {
   getFirestore,
   query,
+  doc,
   getDocs,
   collection,
   where,
   addDoc,
+  updateDoc,
 } from 'firebase/firestore';
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -59,6 +61,19 @@ const registerWithEmailAndPassword = async (name, email, password) => {
       authProvider: 'local',
       email,
     });
+
+    let docid;
+    const usersRef = collection(db, 'users');
+    const q = query(usersRef, where('uid', '==', user.uid));
+    const querySnapshot = await getDocs(q);
+    console.log(querySnapshot);
+    querySnapshot.forEach((doc, i) => {
+      docid = doc.id;
+    });
+    const userUpdateRef = doc(db, 'users', docid);
+    await updateDoc(userUpdateRef, {
+      docid: docid,
+    });
   } catch (err) {
     console.error(err);
     throw err;
@@ -74,7 +89,8 @@ const getUserByUid = async (uid) => {
   const usersRef = collection(db, 'users');
   const q = query(usersRef, where('uid', '==', uid));
   const querySnapshot = await getDocs(q);
-  querySnapshot.forEach((doc) => {
+  console.log(querySnapshot);
+  querySnapshot.forEach((doc, i) => {
     user = doc.data();
   });
   return user;
