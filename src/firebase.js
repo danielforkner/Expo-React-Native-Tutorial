@@ -16,6 +16,7 @@ import {
   addDoc,
   updateDoc,
   getDoc,
+  deleteDoc,
 } from 'firebase/firestore';
 
 // TODO
@@ -76,7 +77,7 @@ const registerWithEmailAndPassword = async (name, email, password) => {
       docid = doc.id;
     });
     const userUpdateRef = doc(db, 'users', docid);
-    await updateDoc(userUpdateRef, {
+    const forceSync = await updateDoc(userUpdateRef, {
       docid: docid,
     });
   } catch (err) {
@@ -126,15 +127,24 @@ export const addEventByAuthor = async (eventData, docid) => {
     const eventsRef = collection(db, 'events');
     const q = query(eventsRef, where('author', '==', docid));
     const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      eventid = doc.id;
-    });
-    const eventsUpdateRef = doc(db, 'events', eventid);
-    await updateDoc(eventsUpdateRef, {
-      eventid: eventid,
+    querySnapshot.forEach(async (event) => {
+      eventid = event.id;
+      const eventsUpdateRef = doc(db, 'events', eventid);
+      await updateDoc(eventsUpdateRef, {
+        eventid: eventid,
+      });
     });
   } catch (error) {
     console.error(err);
+    throw err;
+  }
+};
+
+export const deleteEventByAuthor = async (eventid) => {
+  try {
+    await deleteDoc(doc(db, 'events', eventid)); 
+  } catch (error) {
+    console.error(error);
     throw err;
   }
 };
