@@ -1,39 +1,39 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { StyleSheet, Text, View } from 'react-native';
-import Register from './auth/Register';
+import RegisterLogin from './auth/RegisterLogin';
 import Logout from './auth/Logout';
 import { auth, getUserByUid } from '../firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { setIsLoggedIn, setUser } from './auth/authSlice';
 
 export default function Main() {
-  const [uid, setUid] = useState(null);
+  const [userId, setUserId] = useState(null);
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        setUid(user.uid);
+        setUserId(user.uid);
         dispatch(setIsLoggedIn(true));
       }
     });
 
     const getUser = async () => {
-      let user = await getUserByUid(uid);
-      dispatch(setUser({ uid: user.uid, name: user.name, email: user.email }));
+      let user = await getUserByUid(userId);
+      const { name, email, uid } = user;
+      dispatch(setUser({ uid, name, email }));
     };
 
-    if (uid) {
+    if (userId) {
       getUser();
     }
-  }, [uid]);
+  }, [userId]);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.instructions}>Login or Register</Text>
-      {isLoggedIn ? <Logout /> : <Register />}
+      {isLoggedIn ? <Logout /> : <RegisterLogin />}
     </View>
   );
 }
@@ -44,16 +44,5 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  logo: {
-    width: 305,
-    height: 159,
-    marginBottom: 20,
-  },
-  instructions: {
-    color: '#888',
-    fontSize: 18,
-    marginHorizontal: 15,
-    marginBottom: 10,
   },
 });

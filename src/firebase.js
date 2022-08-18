@@ -77,7 +77,6 @@ const getUserByUid = async (uid) => {
   querySnapshot.forEach((doc) => {
     user = doc.data();
   });
-  console.log(user);
   return user;
 };
 
