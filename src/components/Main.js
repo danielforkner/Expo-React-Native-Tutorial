@@ -6,11 +6,13 @@ import Logout from './auth/Logout';
 import { auth, getUserByUid } from '../firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { setIsLoggedIn, setUser } from './auth/authSlice';
+import MyProfile from './profile/MyProfile';
 
 export default function Main() {
   const [userId, setUserId] = useState(null);
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const currentUser = useSelector((state) => state.auth.currentUser);
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -22,8 +24,8 @@ export default function Main() {
 
     const getUser = async () => {
       let user = await getUserByUid(userId);
-      const { name, email, uid } = user;
-      dispatch(setUser({ uid, name, email }));
+      const { name, email, uid, docid } = user;
+      dispatch(setUser({ uid, name, email, docid }));
     };
 
     if (userId) {
@@ -33,7 +35,14 @@ export default function Main() {
 
   return (
     <View style={styles.container}>
-      {isLoggedIn ? <Logout /> : <RegisterLogin />}
+      {isLoggedIn ? (
+        <View>
+          <Logout />
+          <MyProfile user={currentUser} />
+        </View>
+      ) : (
+        <RegisterLogin />
+      )}
     </View>
   );
 }

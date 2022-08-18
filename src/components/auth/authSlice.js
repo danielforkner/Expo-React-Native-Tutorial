@@ -3,7 +3,7 @@ import { auth } from '../../firebase';
 
 const initialState = {
   isLoggedIn: false,
-  currentUser: { uid: null, name: null, email: null },
+  currentUser: { uid: null, name: null, email: null, docid: null },
 };
 
 export const authSlice = createSlice({
