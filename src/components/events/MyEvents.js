@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 import { getEventsByUserDocId } from '../../firebase';
+import { setMyEvents } from '../auth/authSlice';
 import AddEvents from './AddEvent';
 
 const MyEvents = ({ docid }) => {
-  const [events, setEvents] = useState([]);
+  const dispatch = useDispatch();
+  const events = useSelector((state) => state.auth.myEvents);
 
   useEffect(() => {
     const getEvents = async () => {
       const myEvents = await getEventsByUserDocId(docid);
       console.log(myEvents);
-      setEvents(myEvents);
+      dispatch(setMyEvents(myEvents));
     };
     if (docid) getEvents();
   }, [docid]);

@@ -8,7 +8,8 @@ import {
   StyleSheet,
 } from 'react-native';
 import { useDispatch } from 'react-redux';
-import { addEventByAuthor } from '../../firebase';
+import { addEventByAuthor, getEventsByUserDocId } from '../../firebase';
+import { setMyEvents } from '../auth/authSlice';
 
 const AddEvents = ({ docid }) => {
   const [eventName, setEventName] = useState('');
@@ -21,6 +22,8 @@ const AddEvents = ({ docid }) => {
         { title: eventName, description: eventDescription },
         docid
       );
+      const myEvents = await getEventsByUserDocId(docid);
+      dispatch(setMyEvents(myEvents));
     } catch (error) {
     } finally {
       setEventDescription('');

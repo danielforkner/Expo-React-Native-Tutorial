@@ -4,6 +4,7 @@ import { auth } from '../../firebase';
 const initialState = {
   isLoggedIn: false,
   currentUser: { uid: null, name: null, email: null, docid: null },
+  myEvents: [],
 };
 
 export const authSlice = createSlice({
@@ -16,8 +17,15 @@ export const authSlice = createSlice({
     setUser(state, action) {
       state.currentUser = action.payload;
     },
+    setMyEvents(state, action) {
+      state.myEvents = action.payload;
+    },
+    addToMyEvents(state, action) {
+      state.myEvents.push(action.payload);
+    },
   },
 });
 
-export const { setIsLoggedIn, setUser } = authSlice.actions;
+export const { setIsLoggedIn, setUser, setMyEvents, addToMyEvents } =
+  authSlice.actions;
 export default authSlice.reducer;
