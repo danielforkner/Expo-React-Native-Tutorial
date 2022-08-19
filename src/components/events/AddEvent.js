@@ -1,15 +1,8 @@
 import React, { useState } from 'react';
-import {
-  FlatList,
-  Button,
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-} from 'react-native';
+import { Button, View, Text, TextInput, StyleSheet } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { addEventByAuthor, getEventsByUserDocId } from '../../firebase';
-import { setMyEvents } from '../auth/authSlice';
+import { setMyEvents } from '../events/eventsSlice';
 
 const AddEvents = ({ docid }) => {
   const [eventName, setEventName] = useState('');
@@ -25,7 +18,7 @@ const AddEvents = ({ docid }) => {
       const myEvents = await getEventsByUserDocId(docid);
       dispatch(setMyEvents(myEvents));
     } catch (error) {
-      console.error(error)
+      console.error(error);
     } finally {
       setEventDescription('');
       setEventName('');

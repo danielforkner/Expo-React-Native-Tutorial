@@ -60,27 +60,27 @@ const registerWithEmailAndPassword = async (name, email, password) => {
       email,
       password
     );
-    const user = userCredential.user;
-    await addDoc(collection(db, 'users'), {
-      uid: user.uid,
-      name,
-      authProvider: 'local',
-      email,
-    });
+    // const user = userCredential.user;
+    // await addDoc(collection(db, 'users'), {
+    //   uid: user.uid,
+    //   name,
+    //   authProvider: 'local',
+    //   email,
+    // });
 
-    let docid;
-    const usersRef = collection(db, 'users');
-    const q = query(usersRef, where('uid', '==', user.uid));
-    const querySnapshot = await getDocs(q);
-    console.log(querySnapshot);
-    querySnapshot.forEach((doc) => {
-      docid = doc.id;
-    });
-    const userUpdateRef = doc(db, 'users', docid);
-    const forceSync = await updateDoc(userUpdateRef, {
-      docid: docid,
-    });
-    return docid;
+    // let docid;
+    // const usersRef = collection(db, 'users');
+    // const q = query(usersRef, where('uid', '==', user.uid));
+    // const querySnapshot = await getDocs(q);
+    // console.log(querySnapshot);
+    // querySnapshot.forEach((doc) => {
+    //   docid = doc.id;
+    // });
+    // const userUpdateRef = doc(db, 'users', docid);
+    // const forceSync = await updateDoc(userUpdateRef, {
+    //   docid: docid,
+    // });
+    // return docid;
   } catch (err) {
     console.error(err);
     throw err;
@@ -88,7 +88,7 @@ const registerWithEmailAndPassword = async (name, email, password) => {
 };
 
 const logout = async () => {
-  await signOut();
+  await signOut(auth);
 };
 
 const getUserByUid = async (uid) => {

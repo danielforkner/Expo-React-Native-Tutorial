@@ -1,22 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, TextInput, Text, Button } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
 import {
   registerWithEmailAndPassword,
   logInWithEmailAndPassword,
-  getUserByUid,
 } from '../../firebase';
-import { setIsLoggedIn, setStatus } from './authSlice';
 
 const RegisterLogin = () => {
   const [isRegistering, setIsRegistering] = useState(true);
-  const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [userName, setUserName] = useState('');
   const [isError, setIsError] = useState(false);
   const [errMessage, setErrMessage] = useState('');
-  const authStatus = useSelector((state) => state.auth.status);
 
   useEffect(() => {
     setIsError(false);
@@ -27,15 +22,6 @@ const RegisterLogin = () => {
     setEmail('');
     setPassword('');
     setUserName('');
-  };
-  const updatePassword = (text) => {
-    setPassword(text);
-  };
-  const updateEmail = (text) => {
-    setEmail(text);
-  };
-  const updateUserName = (text) => {
-    setUserName(text);
   };
 
   // Firebase Auth
@@ -48,23 +34,18 @@ const RegisterLogin = () => {
     }
   };
   const submitRegister = async () => {
-    dispatch(setStatus('loading'));
     try {
       await registerWithEmailAndPassword(userName, email, password);
     } catch (error) {
       setIsError(true);
       setErrMessage(error);
     } finally {
-      dispatch(setStatus('idle'));
       resetStates();
     }
   };
   const submitLogin = async () => {
     try {
-      const user = await logInWithEmailAndPassword(email, password);
-      if (user) {
-        dispatch(setIsLoggedIn(true));
-      }
+      await logInWithEmailAndPassword(email, password);
     } catch (error) {
       setIsError(true);
       setErrMessage(error);
@@ -76,7 +57,6 @@ const RegisterLogin = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.instructions}>Login or Register</Text>
-      {authStatus === 'loading' ? <Text>Loadin...</Text> : null}
       <View style={styles.buttonContainer}>
         <Button
           style={styles.button}
@@ -96,21 +76,21 @@ const RegisterLogin = () => {
           <TextInput
             placeholder="username"
             value={userName}
-            onChangeText={updateUserName}
+            onChangeText={(text) => setUserName(text)}
             style={styles.input}
           />
         ) : null}
         <TextInput
           placeholder="email"
           value={email}
-          onChangeText={updateEmail}
+          onChangeText={(text) => setEmail(text)}
           style={styles.input}
         />
         <TextInput
           placeholder="password"
           secureTextEntry={true}
           value={password}
-          onChangeText={updatePassword}
+          onChangeText={(text) => setPassword(text)}
           style={styles.input}
         />
         <Button title={'Submit'} onPress={submitForm} />

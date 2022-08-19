@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, View, Text } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../firebase';
-import { resetState, setIsLoggedIn } from './authSlice';
+import { resetState } from './authSlice';
 
 const Logout = () => {
   const dispatch = useDispatch();
@@ -11,13 +11,13 @@ const Logout = () => {
   return (
     <View>
       <Button
-        title={'Logout Please'}
+        title={'Logout'}
         onPress={() => {
           logout();
-          dispatch(resetState());
+          // dispatch(resetState());
         }}
       />
-      <Text>{`Hello, ${user?.name}`}</Text>
+      {/* <Text>{`Hello, ${user?.name}`}</Text> */}
     </View>
   );
 };
