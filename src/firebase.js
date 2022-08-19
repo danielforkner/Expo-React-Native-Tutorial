@@ -35,10 +35,10 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+export const auth = getAuth(app);
 const db = getFirestore();
 
-const logInWithEmailAndPassword = async (email, password) => {
+export const logInWithEmailAndPassword = async (email, password) => {
   try {
     const userCredential = await signInWithEmailAndPassword(
       auth,
@@ -53,7 +53,7 @@ const logInWithEmailAndPassword = async (email, password) => {
 };
 
 // ----------------USERS
-const registerWithEmailAndPassword = async (name, email, password) => {
+export const registerWithEmailAndPassword = async (name, email, password) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(
       auth,
@@ -87,11 +87,11 @@ const registerWithEmailAndPassword = async (name, email, password) => {
   }
 };
 
-const logout = async () => {
+export const logout = async () => {
   await signOut(auth);
 };
 
-const getUserByUid = async (uid) => {
+export const getUserByUid = async (uid) => {
   let user;
   const usersRef = collection(db, 'users');
   const q = query(usersRef, where('uid', '==', uid));
@@ -104,6 +104,15 @@ const getUserByUid = async (uid) => {
 };
 
 // ----------------EVENTS
+export const getAllPublicEvents = async () => {
+  const events = [];
+  const eventsRef = collection(db, 'events');
+  const q = query(eventsRef);
+  const querySnapshot = await getDocs(q);
+  querySnapshot.forEach((doc) => events.push(doc.data()));
+  return events;
+};
+
 export const getEventsByUserDocId = async (docid) => {
   const events = [];
   const eventsRef = collection(db, 'events');
@@ -148,14 +157,4 @@ export const deleteEventByAuthor = async (eventid) => {
     console.error(error);
     throw err;
   }
-};
-
-export {
-  app,
-  auth,
-  db,
-  getUserByUid,
-  registerWithEmailAndPassword,
-  logInWithEmailAndPassword,
-  logout,
 };
