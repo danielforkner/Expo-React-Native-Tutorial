@@ -35,10 +35,10 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+export const auth = getAuth(app);
 const db = getFirestore();
 
-const logInWithEmailAndPassword = async (email, password) => {
+export const logInWithEmailAndPassword = async (email, password) => {
   try {
     const userCredential = await signInWithEmailAndPassword(
       auth,
@@ -53,45 +53,45 @@ const logInWithEmailAndPassword = async (email, password) => {
 };
 
 // ----------------USERS
-const registerWithEmailAndPassword = async (name, email, password) => {
+export const registerWithEmailAndPassword = async (name, email, password) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(
       auth,
       email,
       password
     );
-    const user = userCredential.user;
-    await addDoc(collection(db, 'users'), {
-      uid: user.uid,
-      name,
-      authProvider: 'local',
-      email,
-    });
+    // const user = userCredential.user;
+    // await addDoc(collection(db, 'users'), {
+    //   uid: user.uid,
+    //   name,
+    //   authProvider: 'local',
+    //   email,
+    // });
 
-    let docid;
-    const usersRef = collection(db, 'users');
-    const q = query(usersRef, where('uid', '==', user.uid));
-    const querySnapshot = await getDocs(q);
-    console.log(querySnapshot);
-    querySnapshot.forEach((doc) => {
-      docid = doc.id;
-    });
-    const userUpdateRef = doc(db, 'users', docid);
-    const forceSync = await updateDoc(userUpdateRef, {
-      docid: docid,
-    });
-    return docid;
+    // let docid;
+    // const usersRef = collection(db, 'users');
+    // const q = query(usersRef, where('uid', '==', user.uid));
+    // const querySnapshot = await getDocs(q);
+    // console.log(querySnapshot);
+    // querySnapshot.forEach((doc) => {
+    //   docid = doc.id;
+    // });
+    // const userUpdateRef = doc(db, 'users', docid);
+    // const forceSync = await updateDoc(userUpdateRef, {
+    //   docid: docid,
+    // });
+    // return docid;
   } catch (err) {
     console.error(err);
     throw err;
   }
 };
 
-const logout = async () => {
-  await signOut();
+export const logout = async () => {
+  await signOut(auth);
 };
 
-const getUserByUid = async (uid) => {
+export const getUserByUid = async (uid) => {
   let user;
   const usersRef = collection(db, 'users');
   const q = query(usersRef, where('uid', '==', uid));
@@ -104,6 +104,15 @@ const getUserByUid = async (uid) => {
 };
 
 // ----------------EVENTS
+export const getAllPublicEvents = async () => {
+  const events = [];
+  const eventsRef = collection(db, 'events');
+  const q = query(eventsRef, where('isPublic', '==', true));
+  const querySnapshot = await getDocs(q);
+  querySnapshot.forEach((doc) => events.push(doc.data()));
+  return events;
+};
+
 export const getEventsByUserDocId = async (docid) => {
   const events = [];
   const eventsRef = collection(db, 'events');
@@ -115,27 +124,10 @@ export const getEventsByUserDocId = async (docid) => {
   return events;
 };
 
-export const addEventByAuthor = async (eventData, docid) => {
+export const addEventByAuthor = async (eventData) => {
   try {
-    const { title, description } = eventData;
-    await addDoc(collection(db, 'events'), {
-      title,
-      description,
-      author: docid,
-    });
-
-    let eventid;
-    const eventsRef = collection(db, 'events');
-    const q = query(eventsRef, where('author', '==', docid));
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach(async (event) => {
-      eventid = event.id;
-      const eventsUpdateRef = doc(db, 'events', eventid);
-      await updateDoc(eventsUpdateRef, {
-        eventid: eventid,
-      });
-    });
-  } catch (error) {
+    await addDoc(collection(db, 'events'), eventData);
+  } catch (err) {
     console.error(err);
     throw err;
   }
@@ -148,14 +140,4 @@ export const deleteEventByAuthor = async (eventid) => {
     console.error(error);
     throw err;
   }
-};
-
-export {
-  app,
-  auth,
-  db,
-  getUserByUid,
-  registerWithEmailAndPassword,
-  logInWithEmailAndPassword,
-  logout,
 };
