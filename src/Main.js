@@ -8,6 +8,7 @@ import { setIsLoggedIn } from './components/auth/authSlice';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import AllEvents from './components/events/AllEvents';
+import MyProfile from './components/profile/MyProfile';
 
 export default function Main() {
   const dispatch = useDispatch();
@@ -34,6 +35,7 @@ export default function Main() {
           <Screen name="auth" component={RegisterLogin} />
         )}
         <Screen name="events" component={AllEvents} />
+        {isLoggedIn ? <Screen name="my profile" component={MyProfile} /> : null}
       </Navigator>
     </NavigationContainer>
   );

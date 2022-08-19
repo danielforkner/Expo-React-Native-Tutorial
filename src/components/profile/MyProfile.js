@@ -1,37 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FlatList, Button, View, Text } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
+import { auth } from '../../firebase';
 import MyEvents from '../events/MyEvents';
 
-const MyProfile = ({ user: { name, docid, email, uid } }) => {
-  const dispatch = useDispatch();
+const MyProfile = () => {
+  const [user, setUser] = useState(auth.currentUser);
 
   return (
     <View>
-      <Text>
-        <FlatList
-          data={[
-            `Name: ${name}`,
-            `docid: ${docid}`,
-            `Email: ${email}`,
-            `uid: ${uid}`,
-          ]}
-          renderItem={({ item }) => (
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-              }}
-            >
-              <Text>{item}</Text>
-              <Button title={'edit'} />
-            </View>
-          )}
-        />
-      </Text>
-      <Text>
-        <MyEvents docid={docid} />
-      </Text>
+      <Text>{user.email}</Text>
+      <Button title={'Update Profile'} />
     </View>
   );
 };

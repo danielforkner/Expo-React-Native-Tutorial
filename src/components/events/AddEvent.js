@@ -1,53 +1,78 @@
 import React, { useState } from 'react';
 import { Button, View, Text, TextInput, StyleSheet } from 'react-native';
 import { useDispatch } from 'react-redux';
-import { addEventByAuthor, getEventsByUserDocId } from '../../firebase';
+import {
+  addEventByAuthor,
+  auth,
+  getAllPublicEvents,
+  getEventsByUserDocId,
+} from '../../firebase';
 import { setMyEvents } from '../events/eventsSlice';
 
-const AddEvents = ({ docid }) => {
+const AddEvents = ({ setEvents }) => {
   const [eventName, setEventName] = useState('');
+  const [form, setForm] = useState(false);
   const [eventDescription, setEventDescription] = useState('');
-  const dispatch = useDispatch();
+  const [state, setState] = useState('');
+  const [city, setCity] = useState('');
+  const [isPublic, setIsPublic] = useState(true);
 
   const handleSubmit = async () => {
     try {
-      const forceSync = await addEventByAuthor(
-        { title: eventName, description: eventDescription },
-        docid
-      );
-      const myEvents = await getEventsByUserDocId(docid);
-      dispatch(setMyEvents(myEvents));
+      await addEventByAuthor({
+        title: eventName,
+        description: eventDescription,
+        state,
+        city,
+        isPublic,
+        authorName: auth.currentUser.displayName,
+        author: auth.currentUser.uid,
+      });
+      const events = await getAllPublicEvents();
+      setEvents(events);
     } catch (error) {
       console.error(error);
     } finally {
       setEventDescription('');
       setEventName('');
+      setState('');
+      setCity('');
+      setForm(false);
     }
-  };
-
-  const updateName = (text) => {
-    setEventName(text);
-  };
-  const updateDescription = (text) => {
-    setEventDescription(text);
   };
 
   return (
     <View>
-      <Text>ADD EVENT</Text>
-      <TextInput
-        placeholder="event name"
-        value={eventName}
-        onChangeText={updateName}
-        style={styles.input}
-      />
-      <TextInput
-        placeholder="event description"
-        value={eventDescription}
-        onChangeText={updateDescription}
-        style={styles.input}
-      />
-      <Button title={'Add Event'} onPress={handleSubmit} />
+      <Button title={'Add Event'} onPress={() => setForm(!form)} />
+      {form ? (
+        <View>
+          <TextInput
+            placeholder="event name"
+            value={eventName}
+            onChangeText={(text) => setEventName(text)}
+            style={styles.input}
+          />
+          <TextInput
+            placeholder="event description"
+            value={eventDescription}
+            onChangeText={(text) => setEventDescription(text)}
+            style={styles.input}
+          />
+          <TextInput
+            placeholder="city"
+            value={city}
+            onChangeText={(text) => setCity(text)}
+            style={styles.input}
+          />
+          <TextInput
+            placeholder="state"
+            value={state}
+            onChangeText={(text) => setState(text)}
+            style={styles.input}
+          />
+          <Button title={'Add Event'} onPress={handleSubmit} />
+        </View>
+      ) : null}
     </View>
   );
 };

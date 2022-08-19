@@ -107,7 +107,7 @@ export const getUserByUid = async (uid) => {
 export const getAllPublicEvents = async () => {
   const events = [];
   const eventsRef = collection(db, 'events');
-  const q = query(eventsRef);
+  const q = query(eventsRef, where('isPublic', '==', true));
   const querySnapshot = await getDocs(q);
   querySnapshot.forEach((doc) => events.push(doc.data()));
   return events;
@@ -124,27 +124,10 @@ export const getEventsByUserDocId = async (docid) => {
   return events;
 };
 
-export const addEventByAuthor = async (eventData, docid) => {
+export const addEventByAuthor = async (eventData) => {
   try {
-    const { title, description } = eventData;
-    await addDoc(collection(db, 'events'), {
-      title,
-      description,
-      author: docid,
-    });
-
-    let eventid;
-    const eventsRef = collection(db, 'events');
-    const q = query(eventsRef, where('author', '==', docid));
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach(async (event) => {
-      eventid = event.id;
-      const eventsUpdateRef = doc(db, 'events', eventid);
-      await updateDoc(eventsUpdateRef, {
-        eventid: eventid,
-      });
-    });
-  } catch (error) {
+    await addDoc(collection(db, 'events'), eventData);
+  } catch (err) {
     console.error(err);
     throw err;
   }
