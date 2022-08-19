@@ -7,6 +7,8 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { setIsLoggedIn } from './components/auth/authSlice';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AllEvents from './components/events/AllEvents';
 import MyProfile from './components/profile/MyProfile';
 
@@ -24,13 +26,30 @@ export default function Main() {
     });
   }, []);
 
-  const { Navigator, Screen } = createBottomTabNavigator();
+  const { Navigator, Screen } = createMaterialBottomTabNavigator();
 
   return (
     <NavigationContainer>
-      <Navigator>
+      <Navigator
+        backBehavior="history"
+        activeColor="orange"
+        inactiveColor="grey"
+        barStyle={{ backgroundColor: '#694fad' }}
+      >
         {isLoggedIn ? (
-          <Screen name="auth" component={Logout} />
+          <Screen
+            name="auth"
+            component={Logout}
+            options={{
+              tabBarIcon: () => (
+                <MaterialCommunityIcons
+                  name="home"
+                  color={'orange'}
+                  size={26}
+                />
+              ),
+            }}
+          />
         ) : (
           <Screen name="auth" component={RegisterLogin} />
         )}
