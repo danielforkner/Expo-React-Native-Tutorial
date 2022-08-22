@@ -36,7 +36,7 @@ export default function Main() {
         // labeled={false}
         barStyle={{ backgroundColor: '#694fad' }}
       >
-        <Screen
+        {/* <Screen
           name="Test"
           component={Test}
           options={{
@@ -44,7 +44,7 @@ export default function Main() {
               <MaterialCommunityIcons name="stop" color={'red'} size={26} />
             ),
           }}
-        />
+        /> */}
         <Screen
           name="Profile"
           component={Profile}

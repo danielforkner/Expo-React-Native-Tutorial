@@ -18,9 +18,7 @@ import {
   getDoc,
   deleteDoc,
 } from 'firebase/firestore';
-
-// TODO
-// * refactor query logic into simple function
+import { getStorage, ref, uploadBytes } from 'firebase/storage';
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -51,6 +49,10 @@ export const logInWithEmailAndPassword = async (email, password) => {
     throw err;
   }
 };
+
+// Storage
+const storage = getStorage(app);
+const storageRef = ref(storage);
 
 // ----------------USERS
 export const registerWithEmailAndPassword = async (name, email, password) => {
