@@ -7,6 +7,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  scrollView: {
+    backgroundColor: 'pink',
+    marginHorizontal: 20,
+  },
 });
 
 export default styles;
