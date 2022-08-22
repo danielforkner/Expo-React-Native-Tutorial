@@ -11,6 +11,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'pink',
     marginHorizontal: 20,
   },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
 });
 
 export default styles;

@@ -14,7 +14,6 @@ const AllEvents = () => {
   useEffect(() => {
     const loadAllEvents = async () => {
       const events = await getAllPublicEvents();
-      console.log(events);
       dispatch(setEvents(events));
     };
     loadAllEvents();

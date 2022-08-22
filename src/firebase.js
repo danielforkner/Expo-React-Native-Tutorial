@@ -5,6 +5,7 @@ import {
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
   signOut,
+  getMultiFactorResolver,
 } from 'firebase/auth';
 import {
   getFirestore,
@@ -18,7 +19,9 @@ import {
   getDoc,
   deleteDoc,
 } from 'firebase/firestore';
-import { getStorage, ref, uploadBytes } from 'firebase/storage';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import 'react-native-get-random-values';
+import { v4 as uuidv4 } from 'uuid';
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -53,6 +56,33 @@ export const logInWithEmailAndPassword = async (email, password) => {
 // Storage
 const storage = getStorage(app);
 const storageRef = ref(storage);
+
+export async function uploadImageAsync(uri) {
+  console.log('URI: ', uri);
+  // Why are we using XMLHttpRequest? See:
+  // https://github.com/expo/expo/issues/2402#issuecomment-443726662
+  const blob = await new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.onload = function () {
+      resolve(xhr.response);
+    };
+    xhr.onerror = function (e) {
+      console.log(e);
+      reject(new TypeError('Network request failed'));
+    };
+    xhr.responseType = 'blob';
+    xhr.open('GET', uri, true);
+    xhr.send(null);
+  });
+
+  const fileRef = ref(getStorage(), uuidv4());
+  const result = await uploadBytes(fileRef, blob);
+
+  // We're done with the blob, close and release it
+  blob.close();
+
+  return await getDownloadURL(fileRef);
+}
 
 // ----------------USERS
 export const registerWithEmailAndPassword = async (name, email, password) => {
@@ -98,7 +128,6 @@ export const getUserByUid = async (uid) => {
   const usersRef = collection(db, 'users');
   const q = query(usersRef, where('uid', '==', uid));
   const querySnapshot = await getDocs(q);
-  console.log(querySnapshot);
   querySnapshot.forEach((doc, i) => {
     user = doc.data();
   });
