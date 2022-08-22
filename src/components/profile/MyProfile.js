@@ -1,16 +1,27 @@
 import React, { useState } from 'react';
-import { FlatList, Button, View, Text } from 'react-native';
+import { Button, View, Text, SafeAreaView } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { auth } from '../../firebase';
-import MyEvents from '../events/MyEvents';
+import Logout from '../auth/Logout';
+import RegisterLogin from '../auth/RegisterLogin';
+import { NavigationContainer } from '@react-navigation/native';
 
 const MyProfile = () => {
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const [user, setUser] = useState(auth.currentUser);
 
   return (
     <View>
-      <Text>{user.email}</Text>
-      <Button title={'Update Profile'} />
+      {isLoggedIn ? (
+        <SafeAreaView>
+          <Logout />
+          <Text>EMAIL: {user?.email}</Text>
+          <Text>DISPLAY NAME: {user?.displayName}</Text>
+          <Button title={'Update Profile'} />
+        </SafeAreaView>
+      ) : (
+        <RegisterLogin />
+      )}
     </View>
   );
 };

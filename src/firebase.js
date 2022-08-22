@@ -113,10 +113,10 @@ export const getAllPublicEvents = async () => {
   return events;
 };
 
-export const getEventsByUserDocId = async (docid) => {
+export const getEventsByUid = async (uid) => {
   const events = [];
   const eventsRef = collection(db, 'events');
-  const q = query(eventsRef, where('author', '==', docid));
+  const q = query(eventsRef, where('author', '==', uid));
   const querySnapshot = await getDocs(q);
   querySnapshot.forEach((doc) => {
     events.push(doc.data());

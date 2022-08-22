@@ -7,9 +7,10 @@ import {
   getAllPublicEvents,
   getEventsByUserDocId,
 } from '../../firebase';
-import { setMyEvents } from '../events/eventsSlice';
+import { setMyEvents, setEvents } from '../events/eventsSlice';
 
-const AddEvents = ({ setEvents }) => {
+const AddEvents = () => {
+  const dispatch = useDispatch();
   const [eventName, setEventName] = useState('');
   const [form, setForm] = useState(false);
   const [eventDescription, setEventDescription] = useState('');
@@ -29,7 +30,7 @@ const AddEvents = ({ setEvents }) => {
         author: auth.currentUser.uid,
       });
       const events = await getAllPublicEvents();
-      setEvents(events);
+      dispatch(setEvents(events));
     } catch (error) {
       console.error(error);
     } finally {

@@ -1,12 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, TextInput, Text, Button } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  TextInput,
+  Text,
+  Button,
+  SafeAreaView,
+} from 'react-native';
 import {
   registerWithEmailAndPassword,
   logInWithEmailAndPassword,
 } from '../../firebase';
 
 const RegisterLogin = () => {
-  const [isRegistering, setIsRegistering] = useState(true);
+  const [isRegistering, setIsRegistering] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [userName, setUserName] = useState('');
@@ -55,20 +62,14 @@ const RegisterLogin = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.instructions}>Login or Register</Text>
+    <SafeAreaView>
       <View style={styles.buttonContainer}>
+        <Button title={'Login'} onPress={() => setIsRegistering(false)} />
         <Button
-          style={styles.button}
           title={'Register'}
           onPress={() => {
             setIsRegistering(true);
           }}
-        />
-        <Button
-          style={styles.button}
-          title={'Login'}
-          onPress={() => setIsRegistering(false)}
         />
       </View>
       <View style={styles.form}>
@@ -96,37 +97,19 @@ const RegisterLogin = () => {
         <Button title={'Submit'} onPress={submitForm} />
       </View>
       {isError ? <Text>{errMessage.message}</Text> : null}
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    textAlign: 'center',
-    // border: '1px solid black',
-  },
-  instructions: {
-    color: '#888',
-    fontSize: 18,
-    marginHorizontal: 15,
-    marginBottom: 10,
-  },
   buttonContainer: {
-    flex: 1,
     flexDirection: 'row',
-    gap: '.5rem',
     backgroundColor: '#fff',
-    alignItems: 'center',
     justifyContent: 'center',
-  },
-  button: {
-    borderRadius: 25,
   },
   form: {
     alignItems: 'center',
     justifyContent: 'center',
-    gap: '1rem',
-    marginVertical: '.5rem',
   },
   input: {
     marginTop: 20,

@@ -1,34 +1,43 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Button } from 'react-native';
-import { useSelector } from 'react-redux';
+import { View, Text, Button, SafeAreaView, ScrollView } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 import { getAllPublicEvents } from '../../firebase';
-import AddEvents from './AddEvent';
+import { setEvents } from './eventsSlice';
+import MyEvents from './MyEvents';
+import styles from '../../styles';
 
 const AllEvents = () => {
-  const [events, setEvents] = useState([]);
+  const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const events = useSelector((state) => state.events.events);
 
   useEffect(() => {
     const loadAllEvents = async () => {
       const events = await getAllPublicEvents();
       console.log(events);
-      setEvents(events);
+      dispatch(setEvents(events));
     };
     loadAllEvents();
   }, []);
 
   return (
-    <View>
-      <Text>All Public Events</Text>
-      {events.map((event, i) => {
-        return (
-          <Text style={{ border: '1px solid blue' }} key={i}>
-            {event.title}: {event.description}
-          </Text>
-        );
-      })}
-      {isLoggedIn ? <AddEvents setEvents={setEvents} /> : null}
-    </View>
+    <SafeAreaView style={styles.container}>
+      <ScrollView style={styles.scrollView}>
+        <Text>All Public Events</Text>
+        {events.map((event, i) => {
+          return (
+            <Text style={{ border: '1px solid blue' }} key={i}>
+              {event.title}: {event.description}
+            </Text>
+          );
+        })}
+        {isLoggedIn ? (
+          <View>
+            <MyEvents />
+          </View>
+        ) : null}
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
