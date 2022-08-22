@@ -1,10 +1,14 @@
 import React from 'react';
-import { SafeAreaView, Text, View } from 'react-native';
+import { Button, SafeAreaView, Text, View } from 'react-native';
 
-const Test = () => {
+const Test = ({ navigation }) => {
   return (
     <SafeAreaView>
       <Text>HELLO FROM TEST</Text>
+      <Button
+        title={'Go to MyProfile'}
+        onPress={() => navigation.navigate('MyProfile')}
+      />
     </SafeAreaView>
   );
 };
