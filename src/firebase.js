@@ -18,6 +18,7 @@ import {
   updateDoc,
   getDoc,
   deleteDoc,
+  setDoc,
 } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import 'react-native-get-random-values';
@@ -58,9 +59,6 @@ const storage = getStorage(app);
 const storageRef = ref(storage);
 
 export async function uploadImageAsync(uri) {
-  console.log('URI: ', uri);
-  // Why are we using XMLHttpRequest? See:
-  // https://github.com/expo/expo/issues/2402#issuecomment-443726662
   const blob = await new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.onload = function () {
@@ -92,27 +90,11 @@ export const registerWithEmailAndPassword = async (name, email, password) => {
       email,
       password
     );
-    // const user = userCredential.user;
-    // await addDoc(collection(db, 'users'), {
-    //   uid: user.uid,
-    //   name,
-    //   authProvider: 'local',
-    //   email,
-    // });
-
-    // let docid;
-    // const usersRef = collection(db, 'users');
-    // const q = query(usersRef, where('uid', '==', user.uid));
-    // const querySnapshot = await getDocs(q);
-    // console.log(querySnapshot);
-    // querySnapshot.forEach((doc) => {
-    //   docid = doc.id;
-    // });
-    // const userUpdateRef = doc(db, 'users', docid);
-    // const forceSync = await updateDoc(userUpdateRef, {
-    //   docid: docid,
-    // });
-    // return docid;
+    const user = userCredential.user;
+    await setDoc(doc(db, 'users', user.uid), {
+      name,
+      email,
+    });
   } catch (err) {
     console.error(err);
     throw err;

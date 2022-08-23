@@ -1,23 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Button,
-  View,
-  Text,
-  SafeAreaView,
-  Platform,
-  Image,
-} from 'react-native';
-import { useSelector } from 'react-redux';
-import { auth, uploadImageAsync } from '../../firebase';
+import { Button, View, Text, SafeAreaView, Platform } from 'react-native';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth } from '../../firebase';
 import Logout from '../auth/Logout';
 import RegisterLogin from '../auth/RegisterLogin';
 import * as ImagePicker from 'expo-image-picker';
-import Constant from 'expo-constants';
+import UploadProfilePic from './UploadProfilePic';
 
 const MyProfile = ({ navigation }) => {
-  const [image, setImage] = useState(null);
-  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
-  const [user, setUser] = useState(auth.currentUser);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [user, loading, error] = useAuthState(auth);
 
   useEffect(() => {
     const getPermission = async () => {
@@ -32,47 +24,21 @@ const MyProfile = ({ navigation }) => {
     getPermission();
   }, []);
 
-  const PickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-    console.log(result);
-    if (!result.cancelled) {
-      setImage(result.uri);
-    }
-  };
-
   return (
     <View>
-      {isLoggedIn ? (
+      <UploadProfilePic
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+      />
+      {user ? (
         <SafeAreaView>
           <Logout />
           <Text>EMAIL: {user?.email}</Text>
           <Text>DISPLAY NAME: {user?.displayName}</Text>
           <Button
-            title="Open Picker for Single File"
-            onPress={async () => {
-              await PickImage();
-            }}
+            title="upload profile pic"
+            onPress={() => setModalVisible(true)}
           />
-          {image ? (
-            <View>
-              <Image
-                source={{ uri: image }}
-                style={{ width: 90, height: 90, resizeMode: 'contain' }}
-              />
-              <Button
-                title="upload image"
-                onPress={async () => {
-                  const photoURL = await uploadImageAsync(image);
-                  console.log('THIS IS THE DOWNLAOD URL: ', photoURL);
-                }}
-              />
-            </View>
-          ) : null}
           <Button
             title={'Go to test'}
             onPress={() => navigation.navigate('Test')}
